@@ -272,10 +272,14 @@ varsImpFactor <- varsFinal %>%
 varsImp <- cbind(varsImpNum, varsImpFactor)
 
 # //ANCHOR - link
-save(dfDev, file = "dfDev.RData")
+
 dfMor <- merge(varsImp, mortality, by = "icuid")
 dfDis <- merge(varsImp, gcs[, c(1, 3)], by = "icuid")
 dfDev <- merge(varsImp, gcs[, c(1, 4)], by = "icuid")
+
+# save(dfMor, file = "dfMor.RData")
+# save(dfDis, file = "dfDis.RData")
+# save(dfDev, file = "dfDev.RData")
 
 save.image()
 

@@ -1,41 +1,45 @@
-# //SECTION - import
+# # //SECTION - import
 
-library(tidyverse)
+# library(tidyverse)
 
-# ---------------------------------------------------------------------------- #
-#                             time interval: 5 mins                            #
-# ---------------------------------------------------------------------------- #
+# # ---------------------------------------------------------------------------- #
+# #                             time interval: 5 mins                            #
+# # ---------------------------------------------------------------------------- #
 
-# //ANCHOR - hirid
+# # //ANCHOR - hirid
 
-# icp
-hicp <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hicp.csv", header = TRUE)
+# # icp
+# hicp <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hicp.csv", header = TRUE)
 
-names(hicp)[1] <- "icuid"
+# names(hicp)[1] <- "icuid"
 
-# bp
-hbp <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hbp.csv", header = TRUE)
+# # bp
+# hbp <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hbp.csv", header = TRUE)
 
-names(hbp)[1] <- "icuid"
+# names(hbp)[1] <- "icuid"
 
-# hr
-hhr <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hhr.csv", header = TRUE)
+# # hr
+# hhr <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hhr.csv", header = TRUE)
 
-names(hhr)[1] <- "icuid"
+# names(hhr)[1] <- "icuid"
 
-# rr
-hrr <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hrr.csv", header = TRUE)
+# # rr
+# hrr <- read.csv("D:/Hai/321-stat/1006-stat/1006-oridata/hrr.csv", header = TRUE)
 
-names(hrr)[1] <- "icuid"
+# names(hrr)[1] <- "icuid"
 
-# merge
-hBpHr <- merge(hbp, hhr, by = c("icuid", "interval"), all = FALSE)
-hBpHrRr <- merge(hBpHr, hrr, by = c("icuid", "interval"), all = FALSE)
-hIcpBpHrRr <- merge(hicp, hBpHrRr, by = c("icuid", "interval"), all = FALSE)
+# # merge
+# hBpHr <- merge(hbp, hhr, by = c("icuid", "interval"), all = FALSE)
+# hBpHrRr <- merge(hBpHr, hrr, by = c("icuid", "interval"), all = FALSE)
+# hIcpBpHrRr <- merge(hicp, hBpHrRr, by = c("icuid", "interval"), all = FALSE)
 
-# //!SECTION
+# # save(hIcpBpHrRr, file = "hIcpBpHrRr.RData")
+
+# # //!SECTION
 
 # //SECTION - preprocess
+
+load("hIcpBpHrRr.RData")
 
 # //ANCHOR - denoise
 
@@ -75,7 +79,7 @@ hIcpBpHrRr$rr <-
 
 # hTrajMf <- missForest(icpBpHrRr, ntree = 100, parallelize = "forests")
 
-load("D:/Hai/321-stat/1006-stat/hTrajMf.RData")
+load("hTrajMf.RData")
 
 hih0 <- hTrajMf$ximp
 

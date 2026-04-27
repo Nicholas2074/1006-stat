@@ -159,3 +159,6 @@ ih1 <- ih0 %>%
 #     )
 
 summary(ih1)
+
+# save(ih0, file = "ih0.RData")
+# save(ih1, file = "ih1.RData")

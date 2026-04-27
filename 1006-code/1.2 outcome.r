@@ -43,9 +43,3 @@ gcs$disgcs <- ifelse(gcs$disgcs <= 8, 1, 0)
 
 # relable devgcs
 gcs$devgcs <- ifelse(gcs$devgcs <= 0, 1, 0)
-
-# //ANCHOR - link
-
-dfMor <- merge(ih1, mortality, by = "icuid")
-dfDis <- merge(ih1, gcs[, c(1, 3)], by = "icuid")
-dfDev <- merge(ih1, gcs[, c(1, 4)], by = "icuid")

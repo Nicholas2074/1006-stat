@@ -8,6 +8,8 @@ set.seed(0)
 
 # //ANCHOR - preprocess
 
+load("dfDis.Rdata")
+
 # delete icuid
 dfDisDel <- dfDis[, -c(1, 7:16)]
 
