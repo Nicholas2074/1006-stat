@@ -8,7 +8,7 @@ set.seed(0)
 
 # //ANCHOR - preprocess
 
-load("dfMor.Rdata")
+load("dfMor.RData")
 
 # delete icuid
 dfMorDel <- dfMor[, -c(1, 7:16)]
