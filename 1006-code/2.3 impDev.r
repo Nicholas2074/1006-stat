@@ -20,27 +20,28 @@ taskDev <- as_task_classif(dfDevDel, target = "devgcs", positive = "1")
 po1Dev <-
     po(
         "removeconstants" # rm constant vars
-    ) %>>%
+    ) 
+    # %>>%
     # po("encode",
     #     method = "one-hot", # one-hot encoding
     #     affect_columns = selector_type("factor")
     # ) %>>%
-    po("scale",
-        scale = TRUE, # scale
-        affect_columns = selector_type("numeric")
-    ) %>>%
-    po("filter", # rm highly correlated vars
-        filter = flt("find_correlation"), filter.cutoff = 0.6
-    ) %>>%
+    # po("scale",
+    #     scale = TRUE, # scale
+    #     affect_columns = selector_type("numeric")
+    # ) %>>%
+    # po("filter", # rm highly correlated vars
+    #     filter = flt("find_correlation"), filter.cutoff = 0.6
+    # ) %>>%
     # po("filter", # boruta filter
     #     filter = mlr3filters::flt("boruta"), filter.cutoff = 1
     # ) %>>%
-    po("classbalancing", # classbalancing
-        reference = "major", adjust = "minor", shuffle = FALSE, ratio = 1
-    )
+    # po("classbalancing", # classbalancing
+    #     reference = "major", adjust = "minor", shuffle = FALSE, ratio = 1
+    # )
 
 # pipline application
-taskDevPo1 <- po1Dev$train(taskDev)[[1]]
+taskDevPo1 <- po1Dev$train(list(taskDev))[[1]]
 print(names(taskDevPo1$data()))
 
 # //!SECTION
