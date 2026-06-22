@@ -1,5 +1,6 @@
 .RData
 .Rhistory
 *.RData
+*.RDataTmp
 *.code-workspace
 /1006-oridata/
