@@ -1,7 +1,8 @@
 # =============================================================================
 # 00_master.r — Complete reproducible analysis pipeline
 # =============================================================================
-# Run this script from the project root directory (D:/ClaudeBox/1006-stat_cc/).
+# Detects the project root automatically: the directory containing 1006-code/.
+# Works on both Windows and Linux without manual path changes.
 #
 # Architecture:
 #   1.x  Data preparation
@@ -11,9 +12,26 @@
 #   5.x  Track 2 — Model interpretation
 #
 # Usage:
-#   setwd("D:/ClaudeBox/1006-stat_cc/")
-#   source("1006-code/00_master.r")
+#   Rscript 1006-code/00_master.r         (from project root)
+#   Rscript -e 'source("1006-code/00_master.r")'  (setwd to project root first)
 # =============================================================================
+
+# ---- Automatically set working directory to project root ----
+# Detect project root as the directory containing this script's parent folder
+if (interactive()) {
+    # RStudio / interactive: use script location
+    project_root <- normalizePath(dirname(dirname(sys.frame(1)$ofile)))
+} else {
+    # Rscript / non-interactive: assume working directory IS the project root
+    project_root <- getwd()
+}
+setwd(project_root)
+cat(sprintf("Project root: %s\n", project_root))
+
+# Verify we're in the right place
+stopifnot(dir.exists("1006-code"))
+stopifnot(dir.exists("1006-oridata"))
+cat("Project structure verified.\n\n")
 
 library(tidyverse)
 
@@ -57,8 +75,9 @@ source("1006-code/3.1 baseline.r")
 cat("\n===== 4.1: Benchmark models (benchCPP.r) =====\n")
 source("1006-code/4.1 benchCPP.r")
 
-cat("\n===== 4.2: External validation (valCPP.r) =====\n")
-source("1006-code/4.2 valCPP.r")
+# TODO: Enable after HiRID per-patient features are assembled
+# cat("\n===== 4.2: External validation (valCPP.r) =====\n")
+# source("1006-code/4.2 valCPP.r")
 
 # =============================================================================
 # 5.x TRACK 2: Model interpretation

@@ -109,8 +109,10 @@ library(mlr3extralearners)
 # install.packages(c("e1071", "kknn", "xgboost", "lightgbm", "catboost"))
 
 # install.packages("remotes")
-
-# remotes::install_url('https://github.com/catboost/catboost/releases/download/v1.2.10/catboost-R-Windows-1.2.10.tgz', INSTALL_opts = c("--no-multiarch", "--no-test-load"))
+# # Windows:
+# # remotes::install_url('https://github.com/catboost/catboost/releases/download/v1.2.10/catboost-R-Windows-1.2.10.tgz', INSTALL_opts = c("--no-multiarch", "--no-test-load"))
+# # Linux/macOS:
+# # install.packages("catboost", repos = c("https://catboost.ai", "https://cloud.r-project.org"))
 
 library(xgboost)
 

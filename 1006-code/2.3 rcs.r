@@ -10,7 +10,7 @@ dfDev <- dfDev_full_imp
 
 # ------------------------------ rcssci package ------------------------------ #
 
-install.packages("rcssci")
+# install.packages("rcssci")  # uncomment if not yet installed
 
 library(rcssci)
 
