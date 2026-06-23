@@ -1,79 +1,18 @@
-# //SECTION - cutoff
-
-# //ANCHOR - hospMortality
-
-# ------------------------------- proc package ------------------------------- #
-
-# library(pROC)
-
-# rocMor <- roc(dfMor$hospMortality, dfMor$cppMean)
-
-# youdenMor <- rocMor$sensitivities + rocMor$specificities - 1
-
-# indexMor <- which.max(youdenMor)
-
-# cutoffMor <- rocMor$thresholds[indexMor]
-
-# cutoffMor
-
-# ------------------------------ cutoff package ------------------------------ #
-
-# install.packages("cutoff")
-
-library(cutoff)
-
-cutoff::roc(dfMor$cppMean, dfMor$hospMortality)
-
-#                      type  auc cutoff sensitivity specificity
-# 1 negative classification 0.63  76.91   0.5934579   0.6332288
-
-dfMorCutoff <- dfMor %>% 
-    mutate(
-        cppCut = ifelse(dfMor$cppMean < 77, 1, 0)
-    )
-
-# //ANCHOR - disgcs
-
-cutoff::roc(dfDis$cppMean, dfDis$disgcs)
-
-#                      type  auc cutoff sensitivity specificity
-# 1 negative classification 0.56  77.62    0.534413    0.585124
-
-# still use the cutoff calculated by hospMortality
-dfDisCutoff <- dfDis %>% 
-    mutate(
-        cppCut = ifelse(dfDis$cppMean < 77, 1, 0)
-    )
-
-# //ANCHOR - devgcs
-
-cutoff::roc(dfDev$cppMean, dfDev$devgcs)
-
-#                      type  auc cutoff sensitivity specificity
-# 1 negative classification 0.53  72.17   0.3017408   0.8149254
-
-# still use the cutoff calculated by hospMortality
-dfDevCutoff <- dfDev %>% 
-    mutate(
-        cppCut = ifelse(dfDev$cppMean < 77, 1, 0)
-    )
-
-# //ANCHOR - cutoff
-
-ih2 <- ih0 %>% 
-    mutate(
-        outCPP = ifelse(cpp < 77, 1, 0)
-    )
-
-# //!SECTION
-
 # //SECTION - logcurde
+
+# Load full datasets for association analysis (Track 1 — no train/test split)
+load("dfMor_full.RData")
+load("dfDis_full.RData")
+load("dfDev_full.RData")
+dfMor <- dfMor_full_imp
+dfDis <- dfDis_full_imp
+dfDev <- dfDev_full_imp
 
 # //SECTION - glm
 
 # //ANCHOR - hospMortality
 
-logMorCrude <- glm(hospMortality ~ cppCut, data = dfMorCutoff, family = binomial)
+logMorCrude <- glm(hospMortality ~ cppMean, data = dfMor, family = binomial)
 
 summary(logMorCrude)
 
@@ -89,7 +28,7 @@ print(ciMorCrude)
 
 # //ANCHOR - disgcs
 
-logDisCrude <- glm(disgcs ~ cppCut, data = dfDisCutoff, family = binomial)
+logDisCrude <- glm(disgcs ~ cppMean, data = dfDis, family = binomial)
 
 summary(logDisCrude)
 
@@ -105,7 +44,7 @@ print(ciDisCrude)
 
 # //ANCHOR - devgcs
 
-logDevCrude <- glm(devgcs ~ cppCut, data = dfDevCutoff, family = binomial)
+logDevCrude <- glm(devgcs ~ cppMean, data = dfDev, family = binomial)
 
 summary(logDevCrude)
 
@@ -218,7 +157,7 @@ resAll0$" " <- paste(rep("NA", nrow(resAll0)))
 
 resAll0 <- resAll0 %>%
     mutate(Variable1 = recode(Variable1,
-        "cppCut" = "CPP < 77mmHg",
+        "cppMean" = "CPP",
         .default = Variable1
     ))
 
@@ -237,10 +176,10 @@ resAll0 <- resAll0[-1, ]
 library(tidyverse)
 
 # subset
-dfCovMor1 <- dfMorCutoff[, c(
+dfCovMor1 <- dfMor[, c(
     "icuid", 
     "hospMortality", 
-    "cppCut",
+    "cppMean",
     "age", 
     "gender", 
     "bmi"
@@ -249,10 +188,10 @@ dfCovMor1 <- dfMorCutoff[, c(
 # //ANCHOR - disgcs
 
 # subset
-dfCovDis1 <- dfDisCutoff[, c(
+dfCovDis1 <- dfDis[, c(
     "icuid", 
     "disgcs", 
-    "cppCut",
+    "cppMean",
     "age", 
     "gender", 
     "bmi"
@@ -261,10 +200,10 @@ dfCovDis1 <- dfDisCutoff[, c(
 # //ANCHOR - devgcs
 
 # subset
-dfCovDev1 <- dfDevCutoff[, c(
+dfCovDev1 <- dfDev[, c(
     "icuid", 
     "devgcs", 
-    "cppCut",
+    "cppMean",
     "age", 
     "gender", 
     "bmi"
@@ -281,7 +220,7 @@ print(names(dfCovMor1))
 
 logMorAdjusted1 <- glm(
     hospMortality ~
-        cppCut +
+        cppMean +
         age +
         gender +
         bmi,
@@ -308,7 +247,7 @@ print(names(dfCovDis1))
 
 logDisAdjusted1 <- glm(
     disgcs ~
-        cppCut +
+        cppMean +
         age +
         gender +
         bmi,
@@ -335,7 +274,7 @@ print(names(dfCovDev1))
 
 logDevAdjusted1 <- glm(
     devgcs ~
-        cppCut +
+        cppMean +
         age +
         gender +
         bmi,
@@ -456,7 +395,7 @@ resAll1$" " <- paste(rep("NA", nrow(resAll1)))
 
 resAll1 <- resAll1 %>%
     mutate(Variable1 = recode(Variable1,
-        "cppCut" = "CPP < 77mmHg",
+        "cppMean" = "CPP",
         "age" = "Age",
         "gender" = "Gender",
         "bmi" = "BMI",
@@ -480,10 +419,10 @@ resAll1 <- resAll1[-1, ]
 library(tidyverse)
 
 # subset
-dfCovMor2 <- dfMorCutoff[, c(
+dfCovMor2 <- dfMor[, c(
     "icuid", 
     "hospMortality", 
-    "cppCut",
+    "cppMean",
     "age", 
     "gender", 
     "bmi", 
@@ -494,10 +433,10 @@ dfCovMor2 <- dfMorCutoff[, c(
 # //ANCHOR - disgcs
 
 # subset
-dfCovDis2 <- dfDisCutoff[, c(
+dfCovDis2 <- dfDis[, c(
     "icuid", 
     "disgcs", 
-    "cppCut",
+    "cppMean",
     "age", 
     "gender", 
     "bmi", 
@@ -508,10 +447,10 @@ dfCovDis2 <- dfDisCutoff[, c(
 # //ANCHOR - devgcs
 
 # subset
-dfCovDev2 <- dfDevCutoff[, c(
+dfCovDev2 <- dfDev[, c(
     "icuid", 
     "devgcs", 
-    "cppCut",
+    "cppMean",
     "age", 
     "gender", 
     "bmi", 
@@ -530,7 +469,7 @@ print(names(dfCovMor2))
 
 logMorAdjusted2 <- glm(
     hospMortality ~
-        cppCut +
+        cppMean +
         age +
         gender +
         bmi +
@@ -559,7 +498,7 @@ print(names(dfCovDis2))
 
 logDisAdjusted2 <- glm(
     disgcs ~
-        cppCut +
+        cppMean +
         age +
         gender +
         bmi +
@@ -588,7 +527,7 @@ print(names(dfCovDev2))
 
 logDevAdjusted2 <- glm(
     devgcs ~
-        cppCut +
+        cppMean +
         age +
         gender +
         bmi +
@@ -711,7 +650,7 @@ resAll2$" " <- paste(rep("NA", nrow(resAll2)))
 
 resAll2 <- resAll2 %>%
     mutate(Variable1 = recode(Variable1,
-        "cppCut" = "CPP < 77mmHg",
+        "cppMean" = "CPP",
         "age" = "Age",
         "gender" = "Gender",
         "bmi" = "BMI",
@@ -719,8 +658,6 @@ resAll2 <- resAll2 %>%
         "cerebrovascular_disease" = "Cerebrovascular disease",
         .default = Variable1
     ))
-
-print(resAll2$Variable1)
 
 resAll2 <- resAll2[-1, ]
 
@@ -752,8 +689,8 @@ resForestCo <- forest(
         resAllCo$OR3
     ),
     ci_column = c(3, 7, 11),
-    ref_line = 1
-    # xlim = c(0, 2)
+    ref_line = 1,
+    xlim = c(0, 1.5)
 )
 
 # Insert text at the top

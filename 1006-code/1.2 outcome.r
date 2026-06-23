@@ -1,12 +1,12 @@
 # //ANCHOR - hospMortality
 
 # eicu
-emortality <- read.csv("D:/Hai/321-stat/1002-stat/1002-oridata/emortality.csv", header = TRUE)
+emortality <- read.csv("1006-oridata/emortality.csv", header = TRUE)
 
 names(emortality) <- c("icuid", "hospMortality")
 
 # mimic
-mmortality <- read.csv("D:/Hai/321-stat/1002-stat/1002-oridata/mmortality.csv", header = TRUE)
+mmortality <- read.csv("1006-oridata/mmortality.csv", header = TRUE)
 
 names(mmortality) <- c("icuid", "hospMortality")
 
@@ -19,12 +19,12 @@ mortality$hospMortality[is.na(mortality$hospMortality)] <- 0
 # //ANCHOR - gcs
 
 # eicu
-egcs <- read.csv("D:/Hai/321-stat/1002-stat/1002-oridata/edev_gcs.csv", header = TRUE)
+egcs <- read.csv("1006-oridata/edev_gcs.csv", header = TRUE)
 
 names(egcs) <- c("icuid", "admgcs", "disgcs", "devgcs")
 
 # mimic
-mgcs <- read.csv("D:/Hai/321-stat/1002-stat/1002-oridata/mdev_gcs.csv", header = TRUE)
+mgcs <- read.csv("1006-oridata/mdev_gcs.csv", header = TRUE)
 
 names(mgcs) <- c("icuid", "admgcs", "disgcs", "devgcs")
 
@@ -41,5 +41,5 @@ gcs$devgcs[is.na(gcs$devgcs)] <- 0
 # relable disgcs
 gcs$disgcs <- ifelse(gcs$disgcs <= 8, 1, 0)
 
-# relable devgcs
-gcs$devgcs <- ifelse(gcs$devgcs <= 0, 1, 0)
+# relable devgcs: deterioration = GCS decreased (negative change), not unchanged (zero)
+gcs$devgcs <- ifelse(gcs$devgcs < 0, 1, 0)

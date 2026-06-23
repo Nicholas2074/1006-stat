@@ -1,5 +1,13 @@
 # //ANCHOR - hospMortality
 
+# Load full datasets for association analysis (Track 1 — no train/test split)
+load("dfMor_full.RData")
+load("dfDis_full.RData")
+load("dfDev_full.RData")
+dfMor <- dfMor_full_imp
+dfDis <- dfDis_full_imp
+dfDev <- dfDev_full_imp
+
 # ------------------------------ rcssci package ------------------------------ #
 
 install.packages("rcssci")
@@ -19,7 +27,7 @@ rcs_logistic.ushap(
         "cerebrovascular_disease"
     ),
     prob = 0.1,
-    filepath = "D:/"
+    filepath = "output/"
 )
 
 # -------------------------------- rms package ------------------------------- #
@@ -54,14 +62,14 @@ ggplot(predMor)
 
 library(rms)
 
-dist <- datadist(dfCovDis)
+dist <- datadist(dfDis)
 
 options(datadist = dist)
 
 fitDis <- lrm(
     disgcs ~ rcs(cppMean, 4) +
         age + gender + bmi + hypertension + cerebrovascular_disease,
-    data = dfCovDis,
+    data = dfDis,
     x = TRUE, y = TRUE
 )
 
@@ -81,14 +89,14 @@ ggplot(predDis)
 
 library(rms)
 
-dist <- datadist(dfCovDev)
+dist <- datadist(dfDev)
 
 options(datadist = dist)
 
 fitDev <- lrm(
     devgcs ~ rcs(cppMean, 4) +
         age + gender + bmi + hypertension + cerebrovascular_disease,
-    data = dfCovDev,
+    data = dfDev,
     x = TRUE, y = TRUE
 )
 
