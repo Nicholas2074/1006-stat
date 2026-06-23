@@ -33,6 +33,25 @@ stopifnot(dir.exists("1006-code"))
 stopifnot(dir.exists("1006-oridata"))
 cat("Project structure verified.\n\n")
 
+# ---- Check required packages (conda-managed, no automatic install) ----
+required <- c(
+    "tidyverse", "mlr3verse", "mlr3extralearners",
+    "kernelshap", "shapviz", "forestploter", "cutoff",
+    "rms", "rcssci", "missForest", "doParallel",
+    "ranger", "xgboost", "lightgbm", "catboost",
+    "compareGroups", "e1071", "kknn", "nnet"
+)
+missing <- required[!sapply(required, requireNamespace, quietly = TRUE)]
+if (length(missing) > 0) {
+    pkg_list <- paste(sprintf("r-%s", tolower(missing)), collapse = " ")
+    cat(sprintf("\nERROR: %d required package(s) missing:\n", length(missing)))
+    cat(paste(missing, collapse = ", "), "\n\n")
+    cat("Install them via conda, then re-run:\n")
+    cat(sprintf("  conda install -c conda-forge %s -y\n\n", pkg_list))
+    stop("Missing packages. Install the above command and re-run.")
+}
+cat("All required packages available.\n\n")
+
 library(tidyverse)
 
 # =============================================================================
