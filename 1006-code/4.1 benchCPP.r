@@ -106,19 +106,11 @@ library(pak)
 
 library(mlr3extralearners)
 
-# install.packages(c("e1071", "kknn", "xgboost", "lightgbm", "catboost"))
-
-# install.packages("remotes")
-# # Windows:
-# # remotes::install_url('https://github.com/catboost/catboost/releases/download/v1.2.10/catboost-R-Windows-1.2.10.tgz', INSTALL_opts = c("--no-multiarch", "--no-test-load"))
-# # Linux/macOS:
-# # install.packages("catboost", repos = c("https://catboost.ai", "https://cloud.r-project.org"))
+# install.packages(c("e1071", "kknn", "xgboost", "lightgbm"))
 
 library(xgboost)
 
 library(lightgbm)
-
-library(catboost)
 
 # //ANCHOR - learnerLR
 
@@ -326,32 +318,6 @@ tunedLGBM <- auto_tuner(
     store_models = TRUE
 )
 
-# //ANCHOR - tunedCatB
-
-# search space
-# View(as.data.table(learnerCatB$param_set))
-psCatB <- ps(
-    depth = p_int(lower = 2, upper = 8),
-    learning_rate = p_dbl(lower = 0.01, upper = 0.3),
-    iterations = p_int(lower = 100, upper = 1000),
-    l2_leaf_reg = p_dbl(lower = 1, upper = 10),
-    border_count = p_int(lower = 32, upper = 255)
-)
-
-# autotuner (with per-fold class balancing)
-tunedCatB <- auto_tuner(
-    tuner = tuner,
-    learner = as_learner(
-        po("classbalancing", reference = "major", adjust = "minor", shuffle = FALSE, ratio = 1) %>>%
-        lrn("classif.catboost", predict_type = "prob")
-    ),
-    resampling = resampling,
-    search_space = psCatB,
-    measure = measure,
-    terminator = terminator,
-    store_models = TRUE
-)
-
 # //ANCHOR - tunedNB (NEW: tuned naive Bayes with laplace smoothing)
 
 # search space
@@ -395,8 +361,7 @@ designLC <- benchmark_grid(
         tunedNNet,
         tunedRF,
         tunedXGB,
-        tunedLGBM,
-        tunedCatB
+        tunedLGBM
     ),
     resampling = resampling
 )
@@ -501,7 +466,7 @@ design_vitals <- benchmark_grid(
     task = task_vitals,
     learners = list(
         learnerLR, tunedNB, tunedRpart, tunedKNN, tunedNNet,
-        tunedRF, tunedXGB, tunedLGBM, tunedCatB
+        tunedRF, tunedXGB, tunedLGBM
     ),
     resampling = resampling
 )
